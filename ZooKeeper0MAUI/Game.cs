@@ -121,7 +121,7 @@ namespace ZooKeeper0MAUI
                         if (zone.occupant != null && zone.occupant.reactionTime == r)
                         {
                             zone.occupant.Activate();
-                            zone.UpdateZoneImage(); // updating zone image here
+                            zone.UpdateZoneImage(); // updating zone image here!
                         }
                     }
                 }
