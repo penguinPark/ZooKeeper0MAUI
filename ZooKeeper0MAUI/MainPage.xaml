@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZooKeeper0MAUI.MainPage">
+            <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+        <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
+            <Label FontSize="24" TextType="Html">
+            <![CDATA[<h1>Add Zones:</h1>]]>
+            </Label>
+            <Button x:Name="DownButton" Text="⏬" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" Clicked="Down_Button_Clicked"/>
+            <Button x:Name="RightButton" Text="⏩" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" Clicked="Right_Button_Clicked"/>
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
+            <Label FontSize="24" TextType="Html">
+            <![CDATA[<h1>Add Animal to Holding:</h1>]]>
+            </Label>
+            <Button Text="🐱" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75"
+                    Clicked="Cat_Button_Clicked"/>
+            <Button Text="🐭" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Mouse_Button_Clicked"/>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
+            <Label FontSize="24" TextType="Html">
+            <![CDATA[<h1>Holding Pen:</h1>]]>
+            </Label>
+            <Button x:Name="HoldingPen" Text="" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" 
+                    Clicked="HoldingPen_Clicked"/>
+        </HorizontalStackLayout>
+        <Grid x:Name="ZooGrid" RowDefinitions="100,100,100,100,100,100,100,100,100,100"
+        ColumnDefinitions="100,100,100,100,100,100,100,100,100,100"
+          Padding="5">
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>
