@@ -23,6 +23,10 @@
                     Clicked="Cat_Button_Clicked"/>
             <Button Text="🐭" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
                     Clicked="Mouse_Button_Clicked"/>
+            <Button Text="🦅" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Raptor_Button_Clicked"/>
+            <Button Text="🐥" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Chick_Button_Clicked"/>
         </HorizontalStackLayout>
         <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
             <Label FontSize="24" TextType="Html">

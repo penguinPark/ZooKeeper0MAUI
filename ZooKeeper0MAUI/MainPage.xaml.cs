@@ -106,6 +106,16 @@ public partial class MainPage : ContentPage
     {
 		//Game.ZoneClick()
     }
+
+    void Raptor_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("raptor");
+    }
+
+    void Chick_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("chick");
+    }
 }
 
 

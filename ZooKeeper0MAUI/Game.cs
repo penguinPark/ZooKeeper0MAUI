@@ -104,6 +104,8 @@ namespace ZooKeeper0MAUI
             }
             if (animalType == "cat") holdingPen.occupant = new Cat("Fluffy");
             if (animalType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
+            if (animalType == "raptor") holdingPen.occupant = new Raptor("RAAAAAA");
+            if (animalType == "chick") holdingPen.occupant = new Chick("baby");
             holdingPen.UpdateZoneImage();
             Console.WriteLine($"Holding pen {holdingPen.occupant.name} at {holdingPen.occupant.location.x},{holdingPen.occupant.location.y}");
             ActivateAnimals();

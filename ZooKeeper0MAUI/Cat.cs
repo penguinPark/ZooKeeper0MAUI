@@ -16,7 +16,8 @@ namespace ZooKeeper0MAUI
         {
             base.Activate();
             Console.WriteLine("I am a cat. Meow.");
-            Hunt();
+            Meow();
+            //Hunt();
         }
 
         /* Note that our cat is currently not very clever about its hunting.
@@ -27,21 +28,79 @@ namespace ZooKeeper0MAUI
          * cat also has a predator to avoid, since the cat may not want to run in
          * to a square that sets it up to be attacked!
          */
-        public void Hunt()
+
+        public void Hunt() // this was in class week 10
         {
-            if (Game.Seek(location.x, location.y, Direction.up, "mouse"))
+            if (Game.Seek(location.x, location.y, Direction.up, "mouse") || Game.Seek(location.x, location.y, Direction.up, "chick"))
             {
                 Game.Attack(this, Direction.up);
             }
-            else if (Game.Seek(location.x, location.y, Direction.down, "mouse"))
+            else if (Game.Seek(location.x, location.y, Direction.down, "mouse") || Game.Seek(location.x, location.y, Direction.down, "chick"))
             {
                 Game.Attack(this, Direction.down);
             }
-            else if (Game.Seek(location.x, location.y, Direction.left, "mouse"))
+            else if (Game.Seek(location.x, location.y, Direction.left, "mouse") || Game.Seek(location.x, location.y, Direction.left, "chick"))
             {
                 Game.Attack(this, Direction.left);
             }
-            else if (Game.Seek(location.x, location.y, Direction.right, "mouse"))
+            else if (Game.Seek(location.x, location.y, Direction.right, "mouse") || Game.Seek(location.x, location.y, Direction.right, "chick"))
+            {
+                Game.Attack(this, Direction.right);
+            }
+        }
+
+        /* Cats run from raptors! */
+        public void Flee() // this was in class week 10
+        {
+            if (Game.Seek(location.x, location.y, Direction.up, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.down)) return;
+            }
+            if (Game.Seek(location.x, location.y, Direction.down, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.up)) return;
+            }
+            if (Game.Seek(location.x, location.y, Direction.left, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.right)) return;
+            }
+            if (Game.Seek(location.x, location.y, Direction.right, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.left)) return;
+            }
+        }
+
+        public void Meow() // this was in class week 10
+        {
+            if (Game.Seek(location.x, location.y, Direction.up, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.down)) return;
+            }
+            else if (Game.Seek(location.x, location.y, Direction.down, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.up)) return;
+            }
+            else if (Game.Seek(location.x, location.y, Direction.left, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.right)) return;
+            }
+            else if (Game.Seek(location.x, location.y, Direction.right, "raptor"))
+            {
+                if (Game.Retreat(this, Direction.left)) return;
+            }
+            else if (Game.Seek(location.x, location.y, Direction.up, "mouse") || Game.Seek(location.x, location.y, Direction.up, "chick"))
+            {
+                Game.Attack(this, Direction.up);
+            }
+            else if (Game.Seek(location.x, location.y, Direction.down, "mouse") || Game.Seek(location.x, location.y, Direction.down, "chick"))
+            {
+                Game.Attack(this, Direction.down);
+            }
+            else if (Game.Seek(location.x, location.y, Direction.left, "mouse") || Game.Seek(location.x, location.y, Direction.left, "chick"))
+            {
+                Game.Attack(this, Direction.left);
+            }
+            else if (Game.Seek(location.x, location.y, Direction.right, "mouse") || Game.Seek(location.x, location.y, Direction.right, "chick"))
             {
                 Game.Attack(this, Direction.right);
             }
