@@ -53,7 +53,7 @@ public partial class MainPage : ContentPage
 	    xx = button.X; // this gets the x-coordinates of the zone button 
 		yy = button.Y; // this gets the y-coordinates of the zone button
 		Game.ZoneClick(convertCoordinates(xx, yy));
-		Console.Write("Hello"); // how to get zone from button clicked?
+		
 	}
 
 
