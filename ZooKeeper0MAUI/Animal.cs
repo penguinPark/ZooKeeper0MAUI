@@ -12,7 +12,7 @@ namespace ZooKeeper0MAUI
 
         public void ReportLocation()
         {
-            Console.WriteLine($"I am at {location.x},{location.y}");
+            Console.WriteLine($"I am at {location.x},{location.y}"); 
         }
 
         virtual public void Activate()

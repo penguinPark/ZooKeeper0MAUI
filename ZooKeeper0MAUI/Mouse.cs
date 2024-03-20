@@ -1,7 +1,7 @@
 ﻿using System;
 namespace ZooKeeper0MAUI
 {
-    public class Mouse : Animal
+    public class Mouse : Animal, IPrey
     {
         public Mouse(string name)
         {
@@ -17,8 +17,8 @@ namespace ZooKeeper0MAUI
         public override void Activate()
         {
             base.Activate();
-            Console.WriteLine("I am a mouse. Squeak.");
-            Flee();
+            (this as IPrey).Flee(this, location.x, location.y, "cat");
+            (this as IPrey).Flee(this, location.x, location.y, "raptor");
         }
 
         /* Note that our mouse is (so far) a teeny bit more strategic than our cat.
@@ -30,25 +30,9 @@ namespace ZooKeeper0MAUI
          * foundation here for intelligence, since we actually check whether our escape
          * was succcesful -- unlike our cats, who just assume they'll get their prey!
          */
-        public void Flee()
-        {
-            if (Game.Seek(location.x, location.y, Direction.up, "cat"))
-            {
-                if (Game.Retreat(this, Direction.down)) return;
-            }
-            if (Game.Seek(location.x, location.y, Direction.down, "cat"))
-            {
-                if (Game.Retreat(this, Direction.up)) return;
-            }
-            if (Game.Seek(location.x, location.y, Direction.left, "cat"))
-            {
-                if (Game.Retreat(this, Direction.right)) return;
-            }
-            if (Game.Seek(location.x, location.y, Direction.right, "cat"))
-            {
-                if (Game.Retreat(this, Direction.left)) return;
-            }
-        }
+
+        // mouse flees from raptor and cat!!!
+        
     }
 }
 
