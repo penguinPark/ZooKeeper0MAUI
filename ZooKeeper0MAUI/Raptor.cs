@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ZooKeeper0MAUI
 {
-    public class Raptor : Bird
+    // new and integrated
+    public class Raptor : Bird, IPredator
     {
         public Raptor(string name)
         {
@@ -19,44 +20,27 @@ namespace ZooKeeper0MAUI
         public override void Activate()
         {
             base.Activate();
-            Console.WriteLine("RAAAAAAAAA ");
-            Hunt();
+            Console.WriteLine("I am a raptor. RAAAAAAAAA 'Murica RAAAAAAA ");
+            turnsSinceLastHunt++;
+            TaskProcess();
         }
 
-        public void Hunt()
+        public void TaskProcess()
         {
-            if (Game.Seek(location.x, location.y, Direction.up, "cat"))
+            TaskCheck = (this as IPredator).Hunt(this, location.x, location.y, "cat");
+            if (TaskCheck == false)
             {
-                Game.Attack(this, Direction.up);
+                TaskCheck = (this as IPredator).Hunt(this, location.x, location.y, "mouse");
+                if (TaskCheck == false)
+                {
+                    TaskCheck = Fly(this, location.x, location.y, 2);
+                    if (TaskCheck == false)
+                    {
+                        Walkabout(location.x, location.y);
+                    }
+                }
             }
-            else if (Game.Seek(location.x, location.y, Direction.down, "cat"))
-            {
-                Game.Attack(this, Direction.down);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.left, "cat"))
-            {
-                Game.Attack(this, Direction.left);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.right, "cat"))
-            {
-                Game.Attack(this, Direction.right);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.up, "mouse"))
-            {
-                Game.Attack(this, Direction.up);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.down, "mouse"))
-            {
-                Game.Attack(this, Direction.down);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.left, "mouse"))
-            {
-                Game.Attack(this, Direction.left);
-            }
-            else if (Game.Seek(location.x, location.y, Direction.right, "mouse"))
-            {
-                Game.Attack(this, Direction.right);
-            }
+            TurnCheck = true;
         }
     }
 }

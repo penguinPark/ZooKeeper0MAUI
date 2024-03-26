@@ -6,24 +6,48 @@ using System.Threading.Tasks;
 
 namespace ZooKeeper0MAUI
 {
-    internal interface IPredator
+    // integhrated
+    public interface IPredator
     {
-        public void Hunt(Animal predator, int x, int y, string prey) // this was in class week 10
+        public bool Hunt(Animal predator, int x, int y, string prey)
         {
-            if (Game.Seek(x, y, Direction.up, prey))
+            if (Game.Seek(x, y, Direction.up, prey, 1))
             {
-                Game.Attack(predator, Direction.up);
+                if (Game.Attack(predator, Direction.up))
+                {
+                    predator.turnsSinceLastHunt = 0;
+                    return true;
+                }
+                return false;
             }
-            else if (Game.Seek(x, y, Direction.down, prey))
+            else if (Game.Seek(x, y, Direction.down, prey, 1))
             {
-                Game.Attack(predator, Direction.down);
+                if (Game.Attack(predator, Direction.down))
+                {
+                    predator.turnsSinceLastHunt = 0;
+                    return true;
+                }
+                return false;
             }
-            else if (Game.Seek(x, y, Direction.left, prey))
+            else if (Game.Seek(x, y, Direction.left, prey, 1))
             {
-                Game.Attack(predator, Direction.left);
+                if (Game.Attack(predator, Direction.left))
+                {
+                    predator.turnsSinceLastHunt = 0;
+                    return true;
+                }
+                return false;
             }
-            else if (Game.Seek(x, y, Direction.right, prey))
-                Game.Attack(predator, Direction.right);
+            else if (Game.Seek(x, y, Direction.right, prey, 1))
+            {
+                if (Game.Attack(predator, Direction.right))
+                {
+                    predator.turnsSinceLastHunt = 0;
+                    return true;
+                }
+                return false;
+            }
+            return false; // nothing to hunt
         }
     }
 }

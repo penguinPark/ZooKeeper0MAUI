@@ -9,10 +9,8 @@
 
         <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
             <Label FontSize="24" TextType="Html">
-            <![CDATA[<h1>Add Zones:</h1>]]>
+                <![CDATA[<h1>Add Zones:</h1>]]>
             </Label>
-            <Button x:Name="DownButton" Text="⏬" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" Clicked="Down_Button_Clicked"/>
-            <Button x:Name="RightButton" Text="⏩" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" Clicked="Right_Button_Clicked"/>
         </HorizontalStackLayout>
 
         <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
@@ -27,6 +25,14 @@
                     Clicked="Raptor_Button_Clicked"/>
             <Button Text="🐥" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
                     Clicked="Chick_Button_Clicked"/>
+            <Button Text="🌾" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75"
+                    Clicked="Grass_Button_Clicked"/>
+            <Button Text="🐓" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Rooster_Button_Clicked"/>
+            <Button Text="🐦‍⬛" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Vulture_Button_Clicked"/>
+            <Button Text="💀" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" FontFamily = "NotoEmoji-Regular.ttf" 
+                    Clicked="Corpse_Button_Clicked"/>
         </HorizontalStackLayout>
         <HorizontalStackLayout Spacing="25" HorizontalOptions="Center">
             <Label FontSize="24" TextType="Html">

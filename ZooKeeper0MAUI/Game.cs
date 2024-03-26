@@ -1,25 +1,36 @@
-﻿using System;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Platform;
+//using ObjCRuntime;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace ZooKeeper0MAUI
 {
+    // move flee retreat fly hunt attack mouse:totalflee directioanl flee
     public static class Game
     {
         static public int numCellsX = 4;
         static public int numCellsY = 4;
 
-        static private int maxCellsX = 10;
-        static private int maxCellsY = 10;
+        static public int maxCellsX = 10;
+        static public int maxCellsY = 10;
 
         static public MainPage mainPage;
 
         static public List<List<Zone>> animalZones = new List<List<Zone>>();
         static public Zone holdingPen;
 
+        static public int totalScore = 0; 
+        //New attributes, which will be used by ZoneManager INTEGRATED
+        static public int directionIndex;
+        static public string direction = "";
+
+
         static public void SetUpGame(MainPage p)
         {
             mainPage = p;
+            ZoneManager zoneManager = new ZoneManager(); //INTEGRATED
             for (var y = 0; y < numCellsY; y++)
             {
                 List<Zone> rowList = new List<Zone>();
@@ -29,9 +40,11 @@ namespace ZooKeeper0MAUI
             }
             Button hpButton = (Button)mainPage.FindByName("HoldingPen");
             holdingPen = new Zone(-1, -1, null, hpButton);
-            Console.WriteLine("I am: " + hpButton.ToString());
+            //At the beginning of the game create a random direction INTEGRATED
+            direction = zoneManager.CreateRandomDirection();
         }
 
+        /*
         static public bool AddZones(Direction d)
         {
             if (d == Direction.down || d == Direction.up)
@@ -58,34 +71,38 @@ namespace ZooKeeper0MAUI
                 numCellsX++;
             }
             return true;
-        }
+        }*/
 
         static public void ZoneClick(Zone clickedZone)
         {
-            Console.Write("Got animal ");
-            Console.WriteLine(clickedZone.emoji == "" ? "none" : clickedZone.emoji);
-            Console.Write("Held animal is ");
-            Console.WriteLine(holdingPen.emoji == "" ? "none" : holdingPen.emoji);
+            ScoreCalculator scoreCalculator = new ScoreCalculator();// INTEGRATED
+            ZoneManager zoneManager = new ZoneManager();
             if (clickedZone.occupant != null) clickedZone.occupant.ReportLocation();
             if (holdingPen.occupant == null && clickedZone.occupant != null)
             {
                 // take animal from zone to holding pen
-                Console.WriteLine("Taking " + clickedZone.emoji);
                 holdingPen.occupant = clickedZone.occupant;
                 holdingPen.occupant.location.x = -1;
                 holdingPen.occupant.location.y = -1;
                 clickedZone.occupant = null;
                 ActivateAnimals();
+                totalScore = scoreCalculator.CalculateTotalScore(animalZones); // INT
+
+                zoneManager.AddZoneWhenFull();//Adding new zone should be executed after all animals finish their actions INT
+                if (zoneManager.IsWin())
+                {
+                    return;
+                }
             }
             else if (holdingPen.occupant != null && clickedZone.occupant == null)
             {
                 // put animal in zone from holding pen
-                Console.WriteLine("Placing " + holdingPen.emoji);
                 clickedZone.occupant = holdingPen.occupant;
                 clickedZone.occupant.location = clickedZone.location;
                 holdingPen.occupant = null;
-                Console.WriteLine("Empty spot now holds: " + clickedZone.emoji);
                 ActivateAnimals();
+                totalScore = scoreCalculator.CalculateTotalScore(animalZones); // INT
+
             }
             else if (holdingPen.occupant != null && clickedZone.occupant != null)
             {
@@ -95,20 +112,25 @@ namespace ZooKeeper0MAUI
             holdingPen.UpdateZoneImage(); // deletes the image on the holding pen
         }
 
-        static public void AddAnimalToHolding(string animalType)
+        static public void AddAnimalToHolding(string occupantType)
         {
+            ZoneManager zoneManager = new ZoneManager(); //INT
             if (holdingPen.occupant != null)
             {
-                Console.WriteLine("Holding pen already occupied!");
                 return;
             }
-            if (animalType == "cat") holdingPen.occupant = new Cat("Fluffy");
-            if (animalType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
-            if (animalType == "raptor") holdingPen.occupant = new Raptor("RAAAAAA");
-            if (animalType == "chick") holdingPen.occupant = new Chick("baby");
+            if (occupantType == "cat") holdingPen.occupant = new Cat("Fluffy");
+            if (occupantType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
+            if (occupantType == "raptor") holdingPen.occupant = new Raptor("RAAAAAA");
+            if (occupantType == "chick") holdingPen.occupant = new Chick("baby");
+            // INTEGRATED
+            if (occupantType == "rooster") holdingPen.occupant = new Rooster("Earl Wings");
+            if (occupantType == "vulture") holdingPen.occupant = new Vulture("Van Helswing");
+            if (occupantType == "grass") holdingPen.occupant = new Grass();
+            if (occupantType == "corpse") holdingPen.occupant = new Corpse();
             holdingPen.UpdateZoneImage();
-            Console.WriteLine($"Holding pen {holdingPen.occupant.name} at {holdingPen.occupant.location.x},{holdingPen.occupant.location.y}");
-            ActivateAnimals();
+            //ActivateAnimals();
+            zoneManager.AddZoneWhenFull();//Keeping watching whether current is full and then adding new zone INTEGRATED
         }
 
         static public void ActivateAnimals()
@@ -120,49 +142,161 @@ namespace ZooKeeper0MAUI
                     for (var x = 0; x < numCellsX; x++)
                     {
                         var zone = animalZones[y][x];
-                        if (zone.occupant != null && zone.occupant.reactionTime == r)
+                        if (zone.occupant as Animal != null && ((Animal)zone.occupant).reactionTime == r && ((Animal)zone.occupant).TurnCheck == false)
                         {
-                            zone.occupant.Activate();
+                            ((Animal)zone.occupant).Activate();
                             zone.UpdateZoneImage(); // updating zone image here!
                         }
                     }
                 }
             }
+            //Going through deaths INT
+            for (var y = 0; y < numCellsY; y++)
+            {
+                for (var x = 0; x < numCellsX; x++)
+                {
+                    var zone = animalZones[y][x];
+                    Animal animal = zone.occupant as Animal;
+                    if (animal != null && animal.turnsSinceLastHunt > 5)
+                    {
+                        zone.occupant = new Corpse();
+                    }
+                }
+            }
+
+            //Going through chicks maturing into other birds INT
+            for (var y = 0; y < numCellsY; y++)
+            {
+                for (var x = 0; x < numCellsX; x++)
+                {
+                    var zone = animalZones[y][x];
+                    Chick chick = zone.occupant as Chick;
+
+                    if (chick != null && chick.totalTurns > 3) //grow up!!!
+                    {
+                        Random random = new Random();
+                        int choice = random.Next(10);
+                        if (choice < 2)
+                        {
+                            zone.occupant = new Raptor("raptor");
+                        }
+                        else if (choice < 7) // The probability of a rooster is 1 in 2
+                        {
+                            zone.occupant = new Rooster("rooster");
+                        }
+                        else // The remaining 1/3 probability is allocated to Vultures
+                        {
+                            zone.occupant = new Vulture("vulture");
+                        }
+                    }
+                }
+            }
+
+            //Going through resetting turnchecks INT
+            for (var y = 0; y < numCellsY; y++)
+            {
+                for (var x = 0; x < numCellsX; x++)
+                {
+                    var zone = animalZones[y][x];
+                    if (zone.occupant as Animal != null)
+                    {
+                        ((Animal)zone.occupant).TurnCheck = false;
+                    }
+                }
+            }
         }
 
-        static public bool Seek(int x, int y, Direction d, string target)
+        // UPDATED AND INTEGRATED
+        static public bool Seek(int x, int y, Direction d, string target, int distance)
         {
-            switch (d)
+            if (target == "null") // Searching for an empty spot
             {
-                case Direction.up:
-                    y--;
-                    break;
-                case Direction.down:
-                    y++;
-                    break;
-                case Direction.left:
-                    x--;
-                    break;
-                case Direction.right:
-                    x++;
-                    break;
+                switch (d)
+                {
+                    case Direction.up:
+                        y = y - distance;
+                        break;
+                    case Direction.down:
+                        y = y + distance;
+                        break;
+                    case Direction.left:
+                        x = x - distance;
+                        break;
+                    case Direction.right:
+                        x = x + distance;
+                        break;
+                }
+                if (y < 0 || x < 0 || y > numCellsY - 1 || x > numCellsX - 1) return false;
+                if (animalZones[y][x].occupant == null) return true;
             }
-            if (y < 0 || x < 0 || y > numCellsY - 1 || x > numCellsX - 1) return false;
-            if (animalZones[y][x].occupant == null) return false;
-            if (animalZones[y][x].occupant.species == target)
+            else
             {
-                return true;
+                switch (d)
+                {
+                    case Direction.up:
+                        y = y - distance;
+                        break;
+                    case Direction.down:
+                        y = y + distance;
+                        break;
+                    case Direction.left:
+                        x = x - distance;
+                        break;
+                    case Direction.right:
+                        x = x + distance;
+                        break;
+                }
+                if (y < 0 || x < 0 || y > numCellsY - 1 || x > numCellsX - 1) return false;
+                if (animalZones[y][x].occupant == null) return false;
+                if (animalZones[y][x].occupant.species == target)
+                {
+                    return true;
+                }
             }
             return false;
         }
+        // INTEGRATED + ADD UPDATE IMAGES
 
-        /* This method currently assumes that the attacker has determined there is prey
-         * in the target direction. In addition to bug-proofing our program, can you think
-         * of creative ways that NOT just assuming the attack is on the correct target (or
-         * successful for that matter) could be used?
-         */
+        static public int Move(Animal animal, Direction d, int distance)
+        {
+            int movedDistance = 0;
+            int x = animal.location.x;
+            int y = animal.location.y;
 
-        static public void Attack(Animal attacker, Direction d)
+            for (int i = 0; i < distance; i++)
+            {
+                switch (d)
+                {
+                    case Direction.up:
+                        y--;
+                        break;
+                    case Direction.down:
+                        y++;
+                        break;
+                    case Direction.left:
+                        x--;
+                        break;
+                    case Direction.right:
+                        x++;
+                        break;
+                }
+                if (y < 0 || x < 0 || y > numCellsY - 1 || x > numCellsX - 1) break;
+                if (animalZones[y][x].occupant == null)
+                {
+                    animalZones[animal.location.y][animal.location.x].occupant = null;
+                    animalZones[y][x].occupant = animal;
+                    movedDistance++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return movedDistance;
+        }
+
+        // NEW AND INTEPGRATED 
+        static public bool Attack(Animal attacker, Direction d)
         {
             Console.WriteLine($"{attacker.name} is attacking {d.ToString()}");
             int x = attacker.location.x;
@@ -171,37 +305,43 @@ namespace ZooKeeper0MAUI
             switch (d)
             {
                 case Direction.up:
-                    animalZones[y - 1][x].occupant = attacker;
-                    animalZones[y - 1][x].UpdateZoneImage();
-                    break;
+                    if (animalZones[y - 1][x].occupant != null)
+                    {
+                        animalZones[y - 1][x].occupant = attacker;
+                        animalZones[y][x].occupant = null;
+                        return true; // hunt successful
+                    }
+                    return false;
                 case Direction.down:
-                    animalZones[y + 1][x].occupant = attacker;
-                    animalZones[y + 1][x].UpdateZoneImage();
-                    break;
+                    if (animalZones[y + 1][x].occupant != null)
+                    {
+                        animalZones[y + 1][x].occupant = attacker;
+                        animalZones[y][x].occupant = null;
+                        return true; // hunt successful
+                    }
+                    return false;
                 case Direction.left:
-                    animalZones[y][x - 1].occupant = attacker;
-                    animalZones[y][x - 1].UpdateZoneImage();
-                    break;
+                    if (animalZones[y][x - 1].occupant != null)
+                    {
+                        animalZones[y][x - 1].occupant = attacker;
+                        animalZones[y][x].occupant = null;
+                        return true; // hunt successful
+                    }
+                    return false;
                 case Direction.right:
-                    animalZones[y][x + 1].occupant = attacker;
-                    animalZones[y][x + 1].UpdateZoneImage();
-                    break;
+                    if (animalZones[y][x + 1].occupant != null)
+                    {
+                        animalZones[y][x + 1].occupant = attacker;
+                        animalZones[y][x].occupant = null;
+                        return true; // hunt successful
+                    }
+                    return false;
             }
-            animalZones[y][x].occupant = null;
-            animalZones[y][x].UpdateZoneImage();
+            return false; // nothing to hunt
         }
 
-        /* We can't make the same assumptions with this method that we do with Attack, since
-         * the animal here runs AWAY from where they spotted their target (using the Seek method
-         * to find a predator in this case). So, we need to figure out if the direction that the
-         * retreating animal wants to move is valid. Is movement in that direction still on the board?
-         * Is it just going to send them into another animal? With our cat & mouse setup, one is the
-         * predator and the other is prey, but what happens when we have an animal who is both? The animal
-         * would want to run away from their predators but towards their prey, right? Perhaps we can generalize
-         * this code (and the Attack and Seek code) to help our animals strategize more...
-         */
-
-        static public bool Retreat(Animal runner, Direction d)
+        // new and integrated
+        static public bool Retreat(Animal runner, Direction d, int distance)
         {
             Console.WriteLine($"{runner.name} is retreating {d.ToString()}");
             int x = runner.location.x;
@@ -210,63 +350,73 @@ namespace ZooKeeper0MAUI
             switch (d)
             {
                 case Direction.up:
-                    /* The logic below uses the "short circuit" property of Boolean &&.
-                     * If we were to check our list using an out-of-range index, we would
-                     * get an error, but since we first check if the direction that we're modifying is
-                     * within the ranges of our lists, if that check is false, then the second half of
-                     * the && is not evaluated, thus saving us from any exceptions being thrown.
-                     */
-                    if (y > 0 && animalZones[y - 1][x].occupant == null)
+                    if (y > 0 && animalZones[y - distance][x].occupant == null)
                     {
-                        animalZones[y - 1][x].occupant = runner;
+                        animalZones[y - distance][x].occupant = runner;
                         animalZones[y][x].occupant = null;
-                        animalZones[y - 1][x].UpdateZoneImage();
-                        animalZones[y][x].UpdateZoneImage();
                         return true; // retreat was successful
                     }
                     return false; // retreat was not successful
-                    /* Note that in these four cases, in our conditional logic we check
-                     * for the animal having one square between itself and the edge that it is
-                     * trying to run to. For example,in the above case, we check that y is greater
-                     * than 0, even though 0 is a valid spot on the list. This is because when moving
-                     * up, the animal would need to go from row 1 to row 0. Attempting to go from row 0
-                     * to row -1 would cause a runtime error. This is a slightly different way of testing
-                     * if 
-                     */
                 case Direction.down:
-                    if (y < numCellsY - 1 && animalZones[y + 1][x].occupant == null)
+                    if (y < numCellsY && animalZones[y + distance][x].occupant == null)
                     {
-                        animalZones[y + 1][x].occupant = runner;
+                        animalZones[y + distance][x].occupant = runner;
                         animalZones[y][x].occupant = null;
-                        animalZones[y + 1][x].UpdateZoneImage();
-                        animalZones[y][x].UpdateZoneImage();
-                        return true;
+                        return true; // retreat was successful
                     }
                     return false;
                 case Direction.left:
-                    if (x > 0 && animalZones[y][x - 1].occupant == null)
+                    if (x > 0 && animalZones[y][x - distance].occupant == null)
                     {
-                        animalZones[y][x - 1].occupant = runner;
+                        animalZones[y][x - distance].occupant = runner;
                         animalZones[y][x].occupant = null;
-                        animalZones[y][x - 1].UpdateZoneImage();
-                        animalZones[y][x].UpdateZoneImage();
-                        return true;
+                        return true; // retreat was successful
                     }
                     return false;
                 case Direction.right:
-                    if (x < numCellsX - 1 && animalZones[y][x + 1].occupant == null)
+                    if (x < numCellsX && animalZones[y][x + distance].occupant == null)
                     {
-                        animalZones[y][x + 1].occupant = runner;
+                        animalZones[y][x + distance].occupant = runner;
                         animalZones[y][x].occupant = null;
-                        animalZones[y][x + 1].UpdateZoneImage();
-                        animalZones[y][x].UpdateZoneImage();
-                        return true;
+                        return true; // retreat was successful
                     }
                     return false;
             }
-            return false; // fallback
+            return false; // cannot retreat
         }
 
+        // new and integrated
+        static public int SeekForMouse(int x, int y, Direction d, string target, int distance)
+        {
+            int squaresToNearest = 0;
+            for (int i = 1; i <= distance; i++)
+            {
+                switch (d)
+                {
+                    case Direction.up:
+                        y--;
+                        break;
+                    case Direction.down:
+                        y++;
+                        break;
+                    case Direction.left:
+                        x--;
+                        break;
+                    case Direction.right:
+                        x++;
+                        break;
+                }
+
+                if (y < 0 || x < 0 || y > numCellsY - 1 || x > numCellsX - 1) return 0;
+                if (animalZones[y][x].occupant == null) return 0;
+                if (animalZones[y][x].occupant.species == target)
+                {
+                    squaresToNearest = i;
+                    return squaresToNearest;
+                }
+            }
+            return 0;
+        }
     }
 }
 

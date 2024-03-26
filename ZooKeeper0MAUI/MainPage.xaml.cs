@@ -56,7 +56,7 @@ public partial class MainPage : ContentPage
 	 * the button once and have it fail BEFORE the button grays out.
 	 * Can you improve on this?
 	 */
-
+	/*
     void Down_Button_Clicked(System.Object sender, System.EventArgs e)
     {
 		if (!Game.AddZones(Direction.down))
@@ -73,7 +73,7 @@ public partial class MainPage : ContentPage
             RightButton.IsEnabled = false;
             RightButton.BackgroundColor = Colors.LightGray;
         }
-    }
+    }*/
 
 	/* In this simple version, each kind of animal has a custom click handler for being added to the holding pen if it comes from the "add" buttons, yet animals can be put back into the holding pen from the "zoo" grid without needing custom code for each animal type.
 	 * 
@@ -105,6 +105,26 @@ public partial class MainPage : ContentPage
     void Chick_Button_Clicked(object sender, EventArgs e)
     {
         Game.AddAnimalToHolding("chick");
+    }
+
+    private void Grass_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("grass");
+    }
+
+    private void Rooster_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("rooster");
+    }
+
+    private void Vulture_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("vulture");
+    }
+
+    private void Corpse_Button_Clicked(object sender, EventArgs e)
+    {
+        Game.AddAnimalToHolding("corpse");
     }
 }
 

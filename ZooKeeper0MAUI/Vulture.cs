@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui.Devices.Sensors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,34 +6,31 @@ using System.Threading.Tasks;
 
 namespace ZooKeeper0MAUI
 {
-    // integrated
-    public class Chick : Bird, IPrey, IPredator
+    // new and int
+    public class Vulture : Bird, IPredator
     {
-        public Chick(string name)
+        public Vulture(string name)
         {
-            emoji = "🐥";
-            species = "chick";
+            emoji = "🐦‍⬛";
+            species = "vulture";
             this.name = name; // "this" to clarify instance vs. method parameter
-            reactionTime = new Random().Next(6, 10);
+            reactionTime = new Random().Next(2, 4);
         }
-
-        public int totalTurns { get; private set; } = 0;//track chick's total turns 
 
         public override void Activate()
         {
             base.Activate();
-            Console.WriteLine("I am a chick. Beepbeep.");
+            Console.WriteLine("I am a vulture. Fear me!");
             turnsSinceLastHunt++;
-            totalTurns++;
             TaskProcess();
         }
 
         public void TaskProcess()
         {
-            TaskCheck = (this as IPrey).Flee(this, location.x, location.y, "cat", 1);
+            TaskCheck = (this as IPredator).Hunt(this, location.x, location.y, "corpse");
             if (TaskCheck == false)
             {
-                TaskCheck = (this as IPredator).Hunt(this, location.x, location.y, "grass");
+                TaskCheck = Fly(this, location.x, location.y, 2);
                 if (TaskCheck == false)
                 {
                     Walkabout(location.x, location.y);

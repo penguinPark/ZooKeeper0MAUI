@@ -3,8 +3,8 @@ namespace ZooKeeper0MAUI
 {
     public class Zone
     {
-        private Animal _occupant = null;
-        public Animal occupant
+        private Occupant _occupant = null;
+        public Occupant occupant
         {
             get { return _occupant; }
             set {
@@ -31,8 +31,8 @@ namespace ZooKeeper0MAUI
         {
             get
             {
-                if (occupant == null) return "";
-                return occupant.reactionTime.ToString();
+                if (occupant as Animal == null) return "";
+                return ((Animal)occupant).reactionTime.ToString();
             }
         }
 
@@ -53,22 +53,22 @@ namespace ZooKeeper0MAUI
          * 
          * Alternatively, we might write more constructors with different signatures in order to handle different Zone creation scenarios!
          */
-
-        public Zone(int x, int y, Animal animal)
+        // look back into 
+        public Zone(int x, int y, Occupant occupant)
         {
             location.x = x;
             location.y = y;
-            occupant = animal;
+            this.occupant = occupant;
 
             zoneButton = Game.mainPage.MakeGridButton(x, y);
             UpdateZoneImage();
         }
 
-        public Zone(int x, int y, Animal animal, Button existingButton)
+        public Zone(int x, int y, Occupant occupant, Button existingButton)
         {
             location.x = x;
             location.y = y;
-            occupant = animal;
+            this.occupant = occupant;
 
             zoneButton = existingButton;
             UpdateZoneImage();
