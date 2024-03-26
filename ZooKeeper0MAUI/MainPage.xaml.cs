@@ -1,4 +1,6 @@
-﻿namespace ZooKeeper0MAUI;
+﻿using Microsoft.Maui.Controls.PlatformConfiguration;
+
+namespace ZooKeeper0MAUI;
 
 public partial class MainPage : ContentPage
 {
@@ -19,12 +21,13 @@ public partial class MainPage : ContentPage
 
 	double xx;
 	double yy;
+
 	public Button MakeGridButton(int x, int y)
 	{
 		Button theButton = new Button
 		{
-			WidthRequest = 75,
-			HeightRequest = 75,
+			WidthRequest = 80,
+			HeightRequest = 80,
 			BorderColor = Colors.Black,
 			BorderWidth = 1,
 			BackgroundColor = Colors.White,
@@ -36,24 +39,15 @@ public partial class MainPage : ContentPage
         return theButton;
 	}
 
-	public Zone convertCoordinates(double X, double Y) 
-	{
-        int xCoor;
-        int yCoor;
-
-		xCoor = (int) ( X - 17.5)/100;
-		yCoor = (int)(Y - 17.5)/100;
-
-		return Game.animalZones[yCoor][xCoor];
-	}
 
     public void ZoneButton_Clicked(object sender, EventArgs e)
 	{
 		Button button = (Button)sender;
+		int c = ZooGrid.GetColumn(button); 
+		int r = ZooGrid.GetRow(button);
 	    xx = button.X; // this gets the x-coordinates of the zone button 
 		yy = button.Y; // this gets the y-coordinates of the zone button
-		Game.ZoneClick(convertCoordinates(xx, yy));
-		
+        Game.ZoneClick(Game.animalZones[r][c]);
 	}
 
 

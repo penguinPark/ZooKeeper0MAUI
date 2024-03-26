@@ -35,9 +35,11 @@
             <Button x:Name="HoldingPen" Text="" BackgroundColor="White" BorderColor="Black" BorderWidth="1" HeightRequest="75" WidthRequest="75" 
                     Clicked="HoldingPen_Clicked"/>
         </HorizontalStackLayout>
-        <Grid x:Name="ZooGrid" RowDefinitions="100,100,100,100,100,100,100,100,100,100"
-        ColumnDefinitions="100,100,100,100,100,100,100,100,100,100"
-          Padding="5">
+        <Grid 
+            x:Name="ZooGrid"
+            RowDefinitions="100,100,100,100,100,100,100,100,100,100"
+            ColumnDefinitions="100,100,100,100,100,100,100,100,100,100"
+            Padding="6">
         </Grid>
     </VerticalStackLayout>
 </ContentPage>
