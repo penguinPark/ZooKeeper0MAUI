@@ -309,6 +309,7 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y - 1][x].occupant = attacker;
                         animalZones[y][x].occupant = null;
+                        animalZones[y - 1][x].UpdateZoneImage();
                         return true; // hunt successful
                     }
                     return false;
@@ -317,6 +318,7 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y + 1][x].occupant = attacker;
                         animalZones[y][x].occupant = null;
+                        animalZones[y + 1][x].UpdateZoneImage();
                         return true; // hunt successful
                     }
                     return false;
@@ -325,6 +327,7 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y][x - 1].occupant = attacker;
                         animalZones[y][x].occupant = null;
+                        animalZones[y][x - 1].UpdateZoneImage();
                         return true; // hunt successful
                     }
                     return false;
@@ -333,10 +336,13 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y][x + 1].occupant = attacker;
                         animalZones[y][x].occupant = null;
+                        animalZones[y][x + 1].UpdateZoneImage();
                         return true; // hunt successful
                     }
                     return false;
             }
+            animalZones[y][x].occupant = null;
+            animalZones[y][x].UpdateZoneImage();
             return false; // nothing to hunt
         }
 
@@ -354,6 +360,8 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y - distance][x].occupant = runner;
                         animalZones[y][x].occupant = null;
+                        animalZones[y - 1][x].UpdateZoneImage();
+                        animalZones[y][x].UpdateZoneImage();
                         return true; // retreat was successful
                     }
                     return false; // retreat was not successful
@@ -362,6 +370,8 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y + distance][x].occupant = runner;
                         animalZones[y][x].occupant = null;
+                        animalZones[y + 1][x].UpdateZoneImage();
+                        animalZones[y][x].UpdateZoneImage();
                         return true; // retreat was successful
                     }
                     return false;
@@ -370,6 +380,8 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y][x - distance].occupant = runner;
                         animalZones[y][x].occupant = null;
+                        animalZones[y][x - 1].UpdateZoneImage();
+                        animalZones[y][x].UpdateZoneImage();
                         return true; // retreat was successful
                     }
                     return false;
@@ -378,6 +390,8 @@ namespace ZooKeeper0MAUI
                     {
                         animalZones[y][x + distance].occupant = runner;
                         animalZones[y][x].occupant = null;
+                        animalZones[y][x + 1].UpdateZoneImage();
+                        animalZones[y][x].UpdateZoneImage();
                         return true; // retreat was successful
                     }
                     return false;
