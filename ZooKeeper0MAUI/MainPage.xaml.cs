@@ -19,8 +19,6 @@ public partial class MainPage : ContentPage
 	 * Called by Zone.cs
 	 */
 
-	double xx;
-	double yy;
 
 	public Button MakeGridButton(int x, int y)
 	{
@@ -43,10 +41,8 @@ public partial class MainPage : ContentPage
     public void ZoneButton_Clicked(object sender, EventArgs e)
 	{
 		Button button = (Button)sender;
-		int c = ZooGrid.GetColumn(button); 
+		int c = ZooGrid.GetColumn(button);
 		int r = ZooGrid.GetRow(button);
-	    xx = button.X; // this gets the x-coordinates of the zone button 
-		yy = button.Y; // this gets the y-coordinates of the zone button
         Game.ZoneClick(Game.animalZones[r][c]);
 	}
 
